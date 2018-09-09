@@ -5,9 +5,9 @@ import java.util.regex.Matcher;
 public class Lexer {
     private Pattern token_patterns;
 
-    public class LexerError extends Exception {
+    public class LexerError extends Parser.JcalcError {
         public LexerError() {
-            super();
+            super("lexer error");
         }
     }
 

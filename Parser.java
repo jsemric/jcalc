@@ -1,15 +1,35 @@
-// test cases - some java approach
-// Occam's razor design
-// server
-
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Parser {
+    private Lexer lexer;
+    private PrecedenceParser parser;
+    private Interpreter interpreter;
 
-    public static class SyntaxError extends Exception {
+    public Parser() {
+        lexer = new Lexer();
+        parser = new PrecedenceParser();
+        interpreter = new Interpreter();
+    }
+
+    public void parseLine(String line) throws JcalcError {
+        ArrayList<Token> tokens = lexer.parse_line(line);
+        System.out.println(tokens);
+        String dest_name = parse(tokens);
+        System.out.println(dest_name);
+        ArrayList<Instr> ins_list = parser.parse(tokens, dest_name);
+        interpreter.interpret(ins_list);
+    }
+
+    public static class JcalcError extends Exception {
+        public JcalcError(String m) {
+            super(m);
+        }
+    }
+
+    public static class SyntaxError extends JcalcError {
         public SyntaxError(String m) {
             super(m);
         }
@@ -33,9 +53,7 @@ public class Parser {
         System.out.println("Running Parser");
 
         try {
-            Lexer lexer = new Lexer();
-            PrecedenceParser parser = new PrecedenceParser();
-            Interpreter interpreter = new Interpreter();
+            Parser parser = new Parser();
 
             // parser.verbose = true;
             Scanner s;
@@ -47,25 +65,16 @@ public class Parser {
             }
             else {
                 s = new Scanner(System.in);
-                String str = "(a+b-2*a)+((a+x)*22)";
-                // s = new Scanner(str);
             }
 
             while (s.hasNext()) {
                 try {
-                    ArrayList<Token> tokens = lexer.parse_line(s.nextLine());
-                    System.out.println(tokens);
-                    String dest_name = parse(tokens);
-                    System.out.println(dest_name);
-                    ArrayList<Instr> ins_list = parser.parse(tokens, dest_name);
-                    interpreter.interpret(ins_list);
+                    parser.parseLine(s.nextLine());
                 }
-                catch (Lexer.LexerError e) {
-                    System.out.println("lexer error");   
-                }
-                catch (SyntaxError e) {
-                    System.out.println(e.toString());      
+                catch (JcalcError e) {
+                    System.out.println(e.toString()); 
                 } finally {
+                    // break while loop if input is a file
                     if (fromFile) {
                         break;
                     }

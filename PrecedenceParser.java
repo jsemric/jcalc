@@ -39,7 +39,7 @@ public class PrecedenceParser {
             put(Token.Type.PLUS, "+"); put(Token.Type.MINUS, "-");
             put(Token.Type.MUL, "*");  put(Token.Type.DIV, "/");
             put(Token.Type.LBRAC, "(");put(Token.Type.RBRAC, ")");
-            put(Token.Type.INT, "i");  put(Token.Type.VAR, "i");
+            put(Token.Type.NUM, "i");  put(Token.Type.VAR, "i");
             put(Token.Type.EXP, "E"); put(Token.Type.HANDLE, "<");
             put(Token.Type.TOP, "$");
         }};
@@ -50,7 +50,7 @@ public class PrecedenceParser {
             put(Token.Type.PLUS, 0); put(Token.Type.MINUS, 1);
             put(Token.Type.MUL, 2);  put(Token.Type.DIV, 3);
             put(Token.Type.LBRAC, 4);put(Token.Type.RBRAC, 5);
-            put(Token.Type.INT, 6);  put(Token.Type.VAR, 6);
+            put(Token.Type.NUM, 6);  put(Token.Type.VAR, 6);
             put(Token.Type.TOP, 7);
         }};
 
@@ -63,7 +63,7 @@ public class PrecedenceParser {
     private static boolean isValue(Token token) {
         Token.Type type = token.type;
         return type == Token.Type.VAR || type == Token.Type.EXP || 
-            type == Token.Type.INT;
+            type == Token.Type.NUM;
     }
     
     private void check_token(Token token) throws Parser.SyntaxError {
@@ -123,7 +123,7 @@ public class PrecedenceParser {
                 // E [+-*/] E -> E
                 ret = new Instr(dest, Instr.token_ins_map.get(t1.type));
                 ret.a = t0;
-                ret.a = t2;
+                ret.b = t2;
             } else if (t0.type == Token.Type.LBRAC && isValue(t1) &&
                 t2.type == Token.Type.RBRAC)
             {
