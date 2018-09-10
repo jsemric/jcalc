@@ -1,6 +1,8 @@
 public class Token {
     public static enum Type {
-        NUM("-?[0-9]+"), PLUS("\\+"), MINUS("-"), MUL("\\*"), DIV("/"),
+        NUM("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"),
+        // NUM("-?[0-9]+"),
+        PLUS("\\+"), MINUS("-"), MUL("\\*"), DIV("/"),
         WSPACE("\\s+"), LBRAC("\\("), RBRAC("\\)"), ASSIGN("="),
         VAR("[A-Za-z_][A-Za-z_0-9]*"),
         SENT(".+"), // sentinel

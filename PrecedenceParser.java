@@ -79,7 +79,7 @@ public class PrecedenceParser {
         return prec_table[y][x];
     }
 
-    private ArrayList<Token> reduce() {
+    private ArrayList<Token> reduce() throws Parser.SyntaxError {
         ArrayList<Token> tokens = new ArrayList<Token>();
         int last_idx = stack.size() - 1;
         while (!stack.isEmpty() && stack.get(last_idx).type != Token.Type.HANDLE) {
@@ -91,6 +91,8 @@ public class PrecedenceParser {
         // remove prec handle
         if (!stack.isEmpty()) {
             stack.remove(last_idx);
+        } else {
+            throw new Parser.SyntaxError("invalid operator syntax");
         }
         return tokens;
     }
@@ -149,12 +151,16 @@ public class PrecedenceParser {
                 ret.a = t1;
             } else {
                 throw new Parser.SyntaxError(
-                    "invalid syntax of unary operation");
+                    "invalid syntax of the unary operation");
             }
         } else if (len == 1) {
             // var -> E
+            Token a = tokens.get(0);
+            if (!isValue(a)) {
+                throw new Parser.SyntaxError("invalid syntax");
+            }
             ret = new Instr(dest, Instr.Type.MOV);
-            ret.a = tokens.get(0);
+            ret.a = a;
         } else {
             throw new Parser.SyntaxError("none or too many operands");
         }

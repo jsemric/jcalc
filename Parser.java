@@ -8,19 +8,26 @@ public class Parser {
     private PrecedenceParser parser;
     private Interpreter interpreter;
 
-    public Parser() {
+    public Parser(boolean v) {
         lexer = new Lexer();
         parser = new PrecedenceParser();
+        if (v) parser.verbose = v;
         interpreter = new Interpreter();
     }
 
     public void parseLine(String line) throws JcalcError {
         ArrayList<Token> tokens = lexer.parse_line(line);
-        System.out.println(tokens);
+        // System.out.println(tokens);
         String dest_name = parse(tokens);
-        System.out.println(dest_name);
         ArrayList<Instr> ins_list = parser.parse(tokens, dest_name);
         interpreter.interpret(ins_list);
+    }
+
+    public void parseString(String string) throws JcalcError {
+        String lines[] = string.split("\\r?\\n");
+        for (String line : lines) {
+            parseLine(line);
+        }
     }
 
     public static class JcalcError extends Exception {
@@ -53,7 +60,8 @@ public class Parser {
         System.out.println("Running Parser");
 
         try {
-            Parser parser = new Parser();
+            Parser parser = new Parser(false);
+            // Parser parser = new Parser(true);
 
             // parser.verbose = true;
             Scanner s;
@@ -84,7 +92,6 @@ public class Parser {
         catch (FileNotFoundException e) {
             System.out.println("file not found");
         }
-        
 
         System.out.println("Parser Finished");
     }

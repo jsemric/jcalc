@@ -40,7 +40,12 @@ public class Interpreter {
     }
 
     private void printOp(Instr ins) throws RuntimeError {
-        System.out.println(getVal(ins.a.data));
+        float a = getVal(ins.a.data);
+        if (a - (int) a == 0) {
+            System.out.println((int) a);
+        } else {
+            System.out.println(a);
+        }
     }
 
     private void mathOp(Instr ins)  throws RuntimeError {
@@ -95,5 +100,6 @@ public class Interpreter {
                     throw new RuntimeError("unknown instruction");
             }
         }
+        // remove all _e* variables
     }
 }
